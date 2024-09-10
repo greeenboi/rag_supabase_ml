@@ -1,5 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { OpenAIEmbeddings } from "@langchain/openai";
+// import { OpenAIEmbeddings } from "@langchain/openai";
+import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
+
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 
 export type Metadata = {
@@ -13,7 +15,9 @@ const getMatchesFromEmbeddings = async (
   client: SupabaseClient,
   topK: number
 ) => {
-  const embeddings = new OpenAIEmbeddings();
+  const embeddings = new HuggingFaceTransformersEmbeddings({
+    modelName: "Xenova/all-MiniLM-L6-v2",
+  });
 
   const store = new SupabaseVectorStore(embeddings, {
     client,

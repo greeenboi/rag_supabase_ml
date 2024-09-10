@@ -1,14 +1,15 @@
-import { OpenAI } from "@langchain/openai";
+// import { OpenAI } from "@langchain/openai";
 import { templates } from "./templates";
 import { LLMChain } from "langchain/chains";
 import { PromptTemplate } from "@langchain/core/prompts";
 import Bottleneck from "bottleneck";
 import { StructuredOutputParser } from "langchain/output_parsers";
+import { CloudflareWorkersAI } from "@langchain/cloudflare";
 
-const llm = new OpenAI({
-  concurrency: 10,
-  temperature: 0,
-  modelName: "gpt-3.5-turbo",
+const llm = new CloudflareWorkersAI({
+  model: "@cf/meta/llama-3-8b-instruct-awq",
+  cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+  cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN,
 });
 
 const { summarizerTemplate, summarizerDocumentTemplate } = templates;

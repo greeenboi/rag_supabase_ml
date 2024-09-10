@@ -1,8 +1,10 @@
-import { CallbackManager } from "langchain/callbacks";
+import { CallbackManager } from "@langchain/core/callbacks/manager";
 import { LLMChain } from "langchain/chains";
-import { ChatOpenAI } from "langchain/chat_models/openai";
-import { OpenAI } from "@langchain/openai";
-import { PromptTemplate } from "langchain/prompts";
+// import { ChatOpenAI } from "langchain/chat_models/openai";
+// import { OpenAI } from "@langchain/openai";
+import { CloudflareWorkersAI } from "@langchain/cloudflare";
+import { ChatCloudflareWorkersAI } from "@langchain/cloudflare";
+import { PromptTemplate } from "@langchain/core/prompts";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { summarizeLongDocument } from "./summarizer";
 import {
@@ -14,7 +16,11 @@ import { ConversationLog } from "./conversationLog";
 import { Metadata, getMatchesFromEmbeddings } from "./matches";
 import { templates } from "./templates";
 
-const llm = new OpenAI({});
+const llm = new CloudflareWorkersAI({
+  model: "@cf/meta/llama-3-8b-instruct-awq",
+  cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+  cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN,
+});
 
 const handleRequest = async ({
   prompt,
@@ -111,10 +117,11 @@ const handleRequest = async ({
         });
 
         let i = 0;
-        const chat = new ChatOpenAI({
-          streaming: true,
-          verbose: true,
-          modelName: "gpt-3.5-turbo",
+        const chat = new ChatCloudflareWorkersAI({
+          model: "@cf/meta/llama-3-8b-instruct-awq", 
+          cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+          cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN,
+
           callbackManager: CallbackManager.fromHandlers({
             async handleLLMNewToken(token) {
               await channel.send({
