@@ -6,7 +6,8 @@ import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase"
 import { supabaseAdminClient } from "utils/supabaseAdmin";
 import { TokenTextSplitter } from "langchain/text_splitter";
 import { summarizeLongDocument } from "./summarizer";
-import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
+// import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
+import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 
 // The TextEncoder instance enc is created and its encode() method is called on the input string.
 // The resulting Uint8Array is then sliced, and the TextDecoder instance decodes the sliced array in a single line of code.
@@ -55,8 +56,9 @@ export default async function handler(
   );
 
   try {
-    const embeddings = new HuggingFaceTransformersEmbeddings({
-      modelName: "Xenova/all-MiniLM-L6-v2",
+    const embeddings = new OllamaEmbeddings({
+      model: "llama2", // default value
+      baseUrl: "http://localhost:11434", // default value
     });
 
     const store = new SupabaseVectorStore(embeddings, {

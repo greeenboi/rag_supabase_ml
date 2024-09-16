@@ -2,8 +2,8 @@ import { CallbackManager } from "@langchain/core/callbacks/manager";
 import { LLMChain } from "langchain/chains";
 // import { ChatOpenAI } from "langchain/chat_models/openai";
 // import { OpenAI } from "@langchain/openai";
-import { CloudflareWorkersAI } from "@langchain/cloudflare";
-import { ChatCloudflareWorkersAI } from "@langchain/cloudflare";
+//import { CloudflareWorkersAI } from "@langchain/cloudflare";
+//import { ChatCloudflareWorkersAI } from "@langchain/cloudflare";
 import { PromptTemplate } from "@langchain/core/prompts";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { summarizeLongDocument } from "./summarizer";
@@ -11,15 +11,17 @@ import {
   createPagesServerClient,
   SupabaseClient,
 } from "@supabase/auth-helpers-nextjs";
-
+import { Ollama } from "@langchain/community/llms/ollama";
 import { ConversationLog } from "./conversationLog";
 import { Metadata, getMatchesFromEmbeddings } from "./matches";
 import { templates } from "./templates";
+import { ChatOllama } from "@langchain/community/chat_models/ollama";
+import { StringOutputParser } from "@langchain/core/output_parsers";
 
-const llm = new CloudflareWorkersAI({
-  model: "@cf/meta/llama-3-8b-instruct-awq",
-  cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
-  cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN,
+
+const llm = new Ollama({
+  baseUrl: "http://localhost:11434", // Default value
+  model: "llama2", // Default value
 });
 
 const handleRequest = async ({
@@ -117,10 +119,10 @@ const handleRequest = async ({
         });
 
         let i = 0;
-        const chat = new ChatCloudflareWorkersAI({
-          model: "@cf/meta/llama-3-8b-instruct-awq", 
-          cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
-          cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN,
+        const chat = new ChatOllama({
+          baseUrl: "http://localhost:11434", // Default value
+          model: "llama2", // Default value
+        
 
           callbackManager: CallbackManager.fromHandlers({
             async handleLLMNewToken(token) {
@@ -187,7 +189,7 @@ const handleRequest = async ({
     //@ts-ignore
     console.error(error);
     // @ts-ignore
-    console.error("Something went wrong with OpenAI: ", error.message);
+    console.error("Something went wrong with suvanXishanXgay ", error.message);
   }
 };
 

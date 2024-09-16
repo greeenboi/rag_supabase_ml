@@ -5,11 +5,11 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import Bottleneck from "bottleneck";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { CloudflareWorkersAI } from "@langchain/cloudflare";
+import { Ollama } from "@langchain/community/llms/ollama";
 
-const llm = new CloudflareWorkersAI({
-  model: "@cf/meta/llama-3-8b-instruct-awq",
-  cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
-  cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN,
+const llm = new Ollama({
+  baseUrl: "http://localhost:11434", // Default value
+  model: "llama2", // Default value
 });
 
 const { summarizerTemplate, summarizerDocumentTemplate } = templates;
